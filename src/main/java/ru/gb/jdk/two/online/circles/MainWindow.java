@@ -4,6 +4,8 @@ import ru.gb.jdk.two.online.common.CanvasMouseListener;
 import ru.gb.jdk.two.online.common.CanvasRepaintListener;
 import ru.gb.jdk.two.online.common.Interactable;
 import ru.gb.jdk.two.online.common.MainCanvas;
+import ru.gb.jdk.two.online.exceptions.BallsExceptional;
+import ru.gb.jdk.two.online.exceptions.CirclesException;
 
 import javax.swing.*;
 import javax.swing.event.MouseInputListener;
@@ -14,7 +16,7 @@ import java.awt.event.MouseListener;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class MainWindow extends JFrame implements CanvasRepaintListener, CanvasMouseListener {
+public class MainWindow extends JFrame implements CanvasRepaintListener{
     private static final int POS_X = 400;
     private static final int POS_Y = 200;
     private static final int WINDOW_WIDTH = 800;
@@ -26,17 +28,19 @@ public class MainWindow extends JFrame implements CanvasRepaintListener, CanvasM
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(POS_X, POS_Y, WINDOW_WIDTH, WINDOW_HEIGHT);
         setTitle("Circles");
-        fillSpites();
+        sprites.add(new Background());
+//        fillSpites();
 
+        BallsExceptional be = new BallsExceptional(this);
         MainCanvas canvas = new MainCanvas(this);
-        canvas.addMouseListener(this);
+        canvas.addMouseListener(be);
+        Thread.setDefaultUncaughtExceptionHandler(be);
         add(canvas);
         setVisible(true);
     }
 
     private void fillSpites(){
-        sprites.add(new Background());
-        for (int i = 1; i < 5; i++) {
+        for (int i = 1; i < 14; i++) {
             sprites.add(new Ball());
         }
     }
@@ -47,12 +51,20 @@ public class MainWindow extends JFrame implements CanvasRepaintListener, CanvasM
         render(canvas, g);
     }
 
-    private void createBall(){
-       sprites.add(new Ball());
-        System.out.println(sprites.size() +" "+ new Random(5).nextInt());
+    public void createBall(){
+        if(checkSpritesSize()){
+            sprites.add(new Ball());
+        }else {
+            throw new CirclesException("you cannot add more than 15 circles");
+        }
+
     }
 
-    private void removeBall(){
+    private boolean checkSpritesSize(){
+        return sprites.size() <= 15;
+    }
+
+    public void removeBall(){
         int r;
         if(sprites.size() > 1){
             r = (int) (Math.random() * (sprites.size() - 1) + 1);
@@ -72,35 +84,11 @@ public class MainWindow extends JFrame implements CanvasRepaintListener, CanvasM
     }
 
     public static void main(String[] args) {
-        new MainWindow();
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        if(SwingUtilities.isRightMouseButton(e)){
-            createBall();
-        }else if(SwingUtilities.isLeftMouseButton(e)){
-            removeBall();
-        }
-    }
-
-    @Override
-    public void mousePressed(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseEntered(MouseEvent e) {
-
-    }
-
-    @Override
-    public void mouseExited(MouseEvent e) {
-
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                new MainWindow();
+            }
+        });
     }
 }
