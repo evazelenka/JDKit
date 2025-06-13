@@ -4,7 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class MainCanvas extends JPanel {
-    private final CanvasRepaintListener controller;
+    public final CanvasRepaintListener controller;
     private long lastFrameTime;
 
     public MainCanvas(CanvasRepaintListener controller){
@@ -30,4 +30,9 @@ public class MainCanvas extends JPanel {
     public int getRight(){return getWidth() - 1;}
     public int getTop(){return 0;}
     public int getBottom(){return getHeight() -1;}
+
+    @Override
+    public void setBackground(Color bg) {
+        super.setBackground(bg);
+    }
 }

@@ -1,11 +1,11 @@
-package ru.gb.jdk.two.online.circles;
+package ru.gb.jdk.two.online.pngApp;
 
 import ru.gb.jdk.two.online.common.CanvasMouseListener;
 import ru.gb.jdk.two.online.common.CanvasRepaintListener;
 import ru.gb.jdk.two.online.common.Interactable;
 import ru.gb.jdk.two.online.common.MainCanvas;
-import ru.gb.jdk.two.online.exceptions.SpritesExceptional;
 import ru.gb.jdk.two.online.exceptions.SpritesException;
+import ru.gb.jdk.two.online.exceptions.SpritesExceptional;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,17 +18,19 @@ public class MainWindow extends JFrame implements CanvasRepaintListener, CanvasM
     private static final int WINDOW_WIDTH = 800;
     private static final int WINDOW_HEIGHT = 600;
 
-    private final ArrayList<Interactable> sprites = new ArrayList<>();
+    public final ArrayList<Interactable> sprites = new ArrayList<>();
 
     private MainWindow(){
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setBounds(POS_X, POS_Y, WINDOW_WIDTH, WINDOW_HEIGHT);
-        setTitle("Circles");
-        sprites.add(new Background());
-        fillSprites();
+        setTitle("Hearts");
+
+
+//        fillSprites();
 
         SpritesExceptional be = new SpritesExceptional();
         MainCanvas canvas = new MainCanvas(this);
+        canvas.setBackground(Color.WHITE);
         canvas.addMouseListener(this);
         Thread.setDefaultUncaughtExceptionHandler(be);
         add(canvas);
@@ -37,7 +39,7 @@ public class MainWindow extends JFrame implements CanvasRepaintListener, CanvasM
 
     private void fillSprites(){
         for (int i = 1; i < 14; i++) {
-            sprites.add(new Ball());
+            sprites.add(new ImagePng());
         }
     }
 
@@ -47,20 +49,20 @@ public class MainWindow extends JFrame implements CanvasRepaintListener, CanvasM
         render(canvas, g);
     }
 
-    public void createBall(){
+    public void createSprite(){
         if(checkSpritesSize()){
-            sprites.add(new Ball());
+            sprites.add(new ImagePng());
         }else {
-            throw new SpritesException("you cannot add more than 15 circles");
+            throw new SpritesException("you cannot add more than 15 hearts");
         }
 
     }
 
     private boolean checkSpritesSize(){
-        return sprites.size() <= 15;
+        return sprites.size() < 15;
     }
 
-    public void removeBall(){
+    public void removeSprite(){
         int r;
         if(sprites.size() > 1){
             r = (int) (Math.random() * (sprites.size() - 1) + 1);
@@ -91,9 +93,9 @@ public class MainWindow extends JFrame implements CanvasRepaintListener, CanvasM
     @Override
     public void mouseClicked(MouseEvent e) {
         if(SwingUtilities.isRightMouseButton(e)){
-            removeBall();
+            removeSprite();
         }else if(SwingUtilities.isLeftMouseButton(e)){
-            createBall();
+            createSprite();
         }
     }
 
