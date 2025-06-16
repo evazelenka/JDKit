@@ -1,9 +1,6 @@
 package ru.gb.jdk.two.online.pngApp;
 
-import ru.gb.jdk.two.online.common.CanvasMouseListener;
-import ru.gb.jdk.two.online.common.CanvasRepaintListener;
-import ru.gb.jdk.two.online.common.Interactable;
-import ru.gb.jdk.two.online.common.MainCanvas;
+import ru.gb.jdk.two.online.common.*;
 import ru.gb.jdk.two.online.exceptions.SpritesException;
 import ru.gb.jdk.two.online.exceptions.SpritesExceptional;
 
@@ -58,15 +55,29 @@ public class MainWindow extends JFrame implements CanvasRepaintListener, CanvasM
 
     }
 
+    public void createSprite(float x, float y){
+        if(checkSpritesSize()){
+            Sprite img = new ImagePng();
+            img.setXY(x, y);
+            sprites.add(img);
+        }else {
+            throw new SpritesException("you cannot add more than 15 hearts");
+        }
+
+    }
+
     private boolean checkSpritesSize(){
         return sprites.size() < 15;
     }
 
     public void removeSprite(){
         int r;
-        if(sprites.size() > 1){
+        if(sprites.size() >1){
             r = (int) (Math.random() * (sprites.size() - 1) + 1);
+            System.out.println(r);
             sprites.remove(sprites.get(r));
+        }else if(sprites.size() == 1){
+            sprites.remove(0);
         }
     }
 
@@ -95,7 +106,7 @@ public class MainWindow extends JFrame implements CanvasRepaintListener, CanvasM
         if(SwingUtilities.isRightMouseButton(e)){
             removeSprite();
         }else if(SwingUtilities.isLeftMouseButton(e)){
-            createSprite();
+            createSprite(e.getX(), e.getY());
         }
     }
 

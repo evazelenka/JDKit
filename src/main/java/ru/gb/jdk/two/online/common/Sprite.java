@@ -23,5 +23,11 @@ public abstract class Sprite implements Interactable{
     @Override
     public void render(MainCanvas canvas, Graphics g){}
 
+    public void setXY(float x, float y){
+        this.x = x;
+        this.y = y;
+
+    }
+
 
 }
