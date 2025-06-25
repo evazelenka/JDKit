@@ -28,7 +28,7 @@ public class MainWindow extends JFrame implements CanvasRepaintListener, CanvasM
         SpritesExceptional be = new SpritesExceptional();
         MainCanvas canvas = new MainCanvas(this);
         canvas.setBackground(Color.WHITE);
-        canvas.addMouseListener(this);
+        addMouseListener(this);
         Thread.setDefaultUncaughtExceptionHandler(be);
         add(canvas);
         setVisible(true);
@@ -72,9 +72,8 @@ public class MainWindow extends JFrame implements CanvasRepaintListener, CanvasM
 
     public void removeSprite(){
         int r;
-        if(sprites.size() >1){
+        if(sprites.size() > 1){
             r = (int) (Math.random() * (sprites.size() - 1) + 1);
-            System.out.println(r);
             sprites.remove(sprites.get(r));
         }else if(sprites.size() == 1){
             sprites.remove(0);
