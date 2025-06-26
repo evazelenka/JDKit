@@ -3,8 +3,12 @@ package fruits;
 import java.util.ArrayList;
 
 public class Box<T extends Fruit> {
-    private ArrayList<T> fruits = new ArrayList<>();
+    private final ArrayList<T> fruits;
     private static final float BOX_WEIGHT = 10.0f;
+
+    Box(){
+        fruits = new ArrayList<>();
+    }
 
     public float getWeight(){
         if(fruits.isEmpty()){
@@ -20,14 +24,12 @@ public class Box<T extends Fruit> {
         fruits.add(t);
     }
 
-    public <O extends Fruit> boolean compare(Box<O> box){
+    public boolean compare(Box<?> box){
         return this.getWeight() == box.getWeight();
     }
 
-    public void changeBox(Box<T> box){
-       while (!fruits.isEmpty()){
-           box.putFruitInBox(fruits.get(0));
-           fruits.remove(0);
-       }
+    public void changeBox(Box<? super T> box){
+       box.fruits.addAll(fruits);
+       this.fruits.clear();
     }
 }

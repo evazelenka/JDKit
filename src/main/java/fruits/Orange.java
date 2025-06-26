@@ -1,7 +1,10 @@
 package fruits;
 
-public class Orange extends Fruit{
-    public Orange(float weight){
-        super(weight);
+public class Orange implements Fruit{
+    private static final float WEIGHT = 1.5f;
+
+    @Override
+    public float getWeight() {
+        return WEIGHT;
     }
 }
