@@ -13,7 +13,7 @@ public class ArraysComparator {
             return false;
         }
         for (int i = 0; i < array.length; i++) {
-            if(!array[i].equals(array2[i])){
+            if(!array[i].getClass().equals(array2[i].getClass())){
                 return false;
             }
         }

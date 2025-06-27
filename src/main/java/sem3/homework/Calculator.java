@@ -6,8 +6,6 @@ package sem3.homework;
 // возвращать результат своей работы.
 
 public class Calculator {
-
-
     public static <T extends Number, V extends Number> Number sum(T t, V v){
        return t.doubleValue() + v.doubleValue();
     }
@@ -17,6 +15,9 @@ public class Calculator {
     }
 
     public static <T extends Number, V extends Number> Number divide(T t, V v){
+        if (v.doubleValue() == 0){
+            throw new ArithmeticException("деление на ноль не допустимо");
+        }
         return t.doubleValue()/v.doubleValue();
     }
 
@@ -30,5 +31,4 @@ public class Calculator {
         System.out.println(Calculator.divide(5, 1.0f));
         System.out.println(Calculator.subtract(5, 1.0f));
     }
-
 }
