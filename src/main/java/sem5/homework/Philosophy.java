@@ -1,59 +1,73 @@
 package sem5.homework;
 
+import lombok.Getter;
+
+import java.util.Random;
 import java.util.concurrent.CountDownLatch;
 
-public class Philosophy implements Runnable{
+public class Philosophy extends Thread{
+
     private String name;
+    private String state;
+    private static final String EATING = " is eating";
+    private static final String THINKING = " is thinking";
+    private boolean isEatingPrevious;
+    private CountDownLatch eat = new CountDownLatch(3);
     private int leftForkIndex;
     private int rightForkIndex;
     private CountDownLatch cdl;
-    private CountDownLatch eating = new CountDownLatch(3);
-    private boolean isEatingPrevious = false;
+    private Table table;
+    private Random rnd;
 
-    public Philosophy(String name, CountDownLatch cdl) {
-        this.name = name;
-        this.cdl = cdl;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setLeftForkIndex(int leftForkIndex) {
-        this.leftForkIndex = leftForkIndex;
-    }
-
-    public void setRightForkIndex(int rightForkIndex) {
-        this.rightForkIndex = rightForkIndex;
-    }
-
-    public int getLeftForkIndex() {
-        return leftForkIndex;
-    }
-
-    public int getRightForkIndex() {
-        return rightForkIndex;
-    }
-
-    public void thinking(){
-        System.out.println(name + " is thinking");
+    public Philosophy(String name, int leftForkIndex, int rightForkIndex, CountDownLatch cdl, Table table) {
         isEatingPrevious = false;
+        this.name = name;
+        this.leftForkIndex = leftForkIndex;
+        this.rightForkIndex = rightForkIndex;
+        this.cdl = cdl;
+        this.table = table;
+        rnd = new Random();
     }
 
-    public boolean checkEating(){
-        return (eating.getCount() != 0) && !isEatingPrevious;
+    private void showState(){
+        System.out.println(name + state + " with " + leftForkIndex + " " + rightForkIndex);
     }
 
-    public void eating() throws InterruptedException {
-                System.out.println(name + " is eating");
-                Thread.sleep(100);
-                eating.countDown();
-                isEatingPrevious = true;
+    private void changeState(String state) throws InterruptedException {
+        this.state = state;
+    }
 
+    private void eat() throws InterruptedException {
+        if(table.checkForks(leftForkIndex, rightForkIndex)){
+            changeState(EATING);
+            showState();
+            eat.countDown();
+            isEatingPrevious = true;
+            sleep(rnd.nextLong(3000, 7000));
+            table.setTakenForks(leftForkIndex, rightForkIndex, false);
+            System.out.println(name + " puts down the forks " + leftForkIndex + " " + rightForkIndex);
+        }
     }
 
     @Override
     public void run() {
-        thinking();
+        while (eat.getCount() != 0){
+            try {
+                eat();
+                think();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        System.out.println(name + " done with eating");
+        cdl.countDown();
     }
+
+    private void think() throws InterruptedException {
+        changeState(THINKING);
+        isEatingPrevious = false;
+        showState();
+        sleep(rnd.nextLong(3000, 6000));
+    }
+
 }

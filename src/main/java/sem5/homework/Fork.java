@@ -1,7 +1,7 @@
 package sem5.homework;
 
 public class Fork {
-    private boolean taken = false;
+    private boolean taken;
 
     public boolean isTaken() {
         return taken;
